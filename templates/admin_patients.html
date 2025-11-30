@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Manage Patients</h2>
+
+<div class="mb-3">
+  <form class="d-flex" method="get">
+    <input
+      type="text"
+      name="q"
+      class="form-control me-2"
+      placeholder="Search by name or phone"
+      value="{{ search_query }}"
+    >
+    <button type="submit" class="btn btn-outline-primary">Search</button>
+  </form>
+</div>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Blacklisted</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in patients %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.full_name }}</td>
+        <td>{{ p.phone }}</td>
+        <td>
+          {% if p.is_blacklisted %}
+            <span class="badge bg-danger">Yes</span>
+          {% else %}
+            <span class="badge bg-success">No</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('edit_patient', patient_id=p.id) }}" class="btn btn-sm btn-primary">
+            Edit
+          </a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5">No patients found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

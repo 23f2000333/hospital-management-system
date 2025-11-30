@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Doctor Availability</h2>
+<p>
+  Doctor: {{ doctor.full_name }} ({{ doctor.specialization }})
+</p>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in slots %}
+      <tr>
+        <td>{{ s.date }}</td>
+        <td>{{ s.start_time.strftime('%H:%M') }}</td>
+        <td>{{ s.end_time.strftime('%H:%M') }}</td>
+        <td>
+          <form
+            method="post"
+            action="{{ url_for('book_appointment', slot_id=s.id) }}"
+            style="display:inline-block"
+          >
+            <button type="submit" class="btn btn-sm btn-primary">Book</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No free slots available.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('patient_dashboard') }}" class="btn btn-link">Back to Dashboard</a>
+{% endblock %}

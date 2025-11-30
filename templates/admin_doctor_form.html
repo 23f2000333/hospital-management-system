@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>
+  {% if doctor %}
+    Edit Doctor
+  {% else %}
+    Add Doctor
+  {% endif %}
+</h2>
+
+<form method="post">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Full Name</label>
+      <input
+        type="text"
+        name="full_name"
+        class="form-control"
+        required
+        value="{{ doctor.full_name if doctor else '' }}"
+      >
+    </div>
+    <div class="col-md-3 mb-3">
+      <label class="form-label">Username</label>
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        required
+        value="{{ doctor.user.username if doctor else '' }}"
+      >
+    </div>
+    <div class="col-md-3 mb-3">
+      <label class="form-label">Email</label>
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        required
+        value="{{ doctor.user.email if doctor else '' }}"
+      >
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Specialization</label>
+      <input
+        type="text"
+        name="specialization"
+        class="form-control"
+        required
+        value="{{ doctor.specialization if doctor else '' }}"
+      >
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Department</label>
+      <select name="department_id" class="form-select">
+        <option value="">Select department</option>
+        {% for dept in departments %}
+          <option
+            value="{{ dept.id }}"
+            {% if doctor and doctor.department_id == dept.id %}selected{% endif %}
+          >
+            {{ dept.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Years of Experience</label>
+      <input
+        type="number"
+        name="years_experience"
+        class="form-control"
+        value="{{ doctor.years_experience if doctor and doctor.years_experience else '' }}"
+      >
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Short Bio</label>
+    <textarea name="bio" class="form-control" rows="3">{{ doctor.bio if doctor else '' }}</textarea>
+  </div>
+
+  {% if not doctor %}
+    <div class="mb-3">
+      <label class="form-label">Password (for doctor login)</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+  {% else %}
+    <div class="mb-3">
+      <label class="form-label">New Password (leave blank to keep same)</label>
+      <input type="password" name="password" class="form-control">
+    </div>
+
+    <div class="form-check mb-2">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="is_active"
+        id="is_active"
+        {% if doctor.is_active %}checked{% endif %}
+      >
+      <label class="form-check-label" for="is_active">
+        Active
+      </label>
+    </div>
+
+    <div class="form-check mb-3">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="is_blacklisted"
+        id="is_blacklisted"
+        {% if doctor.is_blacklisted %}checked{% endif %}
+      >
+      <label class="form-check-label" for="is_blacklisted">
+        Blacklisted
+      </label>
+    </div>
+  {% endif %}
+
+  <button type="submit" class="btn btn-primary">
+    {% if doctor %}Save Changes{% else %}Add Doctor{% endif %}
+  </button>
+  <a href="{{ url_for('admin_doctors') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

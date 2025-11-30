@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Doctor Dashboard</h2>
+<p>Welcome, {{ doctor.full_name if doctor else "Doctor" }}</p>
+
+<h4>Upcoming Appointments</h4>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Patient</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in upcoming_appointments %}
+      <tr>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time.strftime('%H:%M') }}</td>
+        <td>{{ appt.patient.full_name }}</td>
+        <td>{{ appt.status }}</td>
+        <td>
+          <!-- change status -->
+          <form
+            method="post"
+            action="{{ url_for('update_appointment_status', appointment_id=appt.id) }}"
+            class="d-inline"
+          >
+            <select name="status" class="form-select form-select-sm d-inline w-auto">
+              <option value="booked" {% if appt.status == 'booked' %}selected{% endif %}>Booked</option>
+              <option value="completed" {% if appt.status == 'completed' %}selected{% endif %}>Completed</option>
+              <option value="cancelled" {% if appt.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+          </form>
+
+          <!-- treatment form -->
+          <a
+            href="{{ url_for('edit_treatment', appointment_id=appt.id) }}"
+            class="btn btn-sm btn-success"
+          >
+            Treatment
+          </a>
+
+          <!-- patient history -->
+          <a
+            href="{{ url_for('patient_history', patient_id=appt.patient_id) }}"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            History
+          </a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5">No upcoming appointments.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>Past Appointments</h4>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Patient</th>
+      <th>Status</th>
+      <th>Diagnosis</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in past_appointments %}
+      <tr>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time.strftime('%H:%M') }}</td>
+        <td>{{ appt.patient.full_name }}</td>
+        <td>{{ appt.status }}</td>
+        <td>{{ appt.treatment.diagnosis if appt.treatment else '' }}</td>
+        <td>
+          <a
+            href="{{ url_for('patient_history', patient_id=appt.patient_id) }}"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            History
+          </a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6">No past appointments.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

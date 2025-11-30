@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Hospital Management System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Hospital Management System</a>
+
+        <div class="collapse navbar-collapse justify-content-end">
+          <ul class="navbar-nav">
+
+            {# If user is logged in #}
+            {% if current_user.is_authenticated %}
+
+              <li class="nav-item me-3">
+                <span class="navbar-text">
+                  Logged in as {{ current_user.username }} ({{ current_user.role }})
+                </span>
+              </li>
+
+              {# Admin links #}
+              {% if current_user.role == 'admin' %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('admin_doctors') }}">Doctors</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('admin_patients') }}">Patients</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('admin_appointments') }}">Appointments</a>
+                </li>
+
+              {# Doctor links #}
+              {% elif current_user.role == 'doctor' %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('doctor_dashboard') }}">Doctor Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('doctor_availability') }}">Availability</a>
+                </li>
+
+              {# Patient links #}
+              {% elif current_user.role == 'patient' %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('patient_profile') }}">My Profile</a>
+                </li>
+              {% endif %}
+
+              <li class="nav-item ms-3">
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              </li>
+
+            {# If user is NOT logged in #}
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('register') }}">Patient Register</a>
+              </li>
+            {% endif %}
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ msg }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

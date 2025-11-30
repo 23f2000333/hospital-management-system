@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Appointments</h2>
+
+<form class="mb-3" method="get">
+  <label class="form-label me-2">Filter by status:</label>
+  <select name="status" class="form-select form-select-sm d-inline w-auto me-2">
+    <option value="">All</option>
+    <option value="booked" {% if status_filter == 'booked' %}selected{% endif %}>Booked</option>
+    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+    <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+  </select>
+  <button type="submit" class="btn btn-sm btn-outline-primary">Apply</button>
+</form>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Patient</th>
+      <th>Doctor</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in appointments %}
+      <tr>
+        <td>{{ appt.id }}</td>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time.strftime('%H:%M') }}</td>
+        <td>{{ appt.patient.full_name }}</td>
+        <td>{{ appt.doctor.full_name }}</td>
+        <td>{{ appt.status }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6">No appointments found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-link">Back to Dashboard</a>
+{% endblock %}

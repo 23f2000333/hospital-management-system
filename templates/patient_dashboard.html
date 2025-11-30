@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Patient Dashboard</h2>
+<p>Welcome, {{ patient.full_name if patient else "" }}</p>
+
+<h4>Departments / Specializations</h4>
+<ul>
+  {% for dept in departments %}
+    <li>{{ dept.name }} – {{ dept.description }}</li>
+  {% else %}
+    <li>No departments configured.</li>
+  {% endfor %}
+</ul>
+
+<h4>Doctors</h4>
+
+<form class="d-flex mb-2" method="get" action="{{ url_for('patient_dashboard') }}">
+  <input
+    type="text"
+    name="q"
+    class="form-control me-2"
+    placeholder="Search doctor by name or specialization"
+    value="{{ search_query if search_query is defined else '' }}"
+  >
+  <button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
+</form>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Specialization</th>
+      <th>Department</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in doctors %}
+      <tr>
+        <td>{{ d.full_name }}</td>
+        <td>{{ d.specialization }}</td>
+        <td>{{ d.department.name if d.department else '' }}</td>
+        <td>
+          <a
+            href="{{ url_for('view_doctor_availability', doctor_id=d.id) }}"
+            class="btn btn-sm btn-outline-primary"
+          >
+            View Availability
+          </a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No doctors found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<h4>Upcoming Appointments</h4>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Doctor</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in upcoming_appointments %}
+      <tr>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time.strftime('%H:%M') }}</td>
+        <td>{{ appt.doctor.full_name }}</td>
+        <td>{{ appt.status }}</td>
+        <td>
+          {% if appt.status == 'booked' %}
+            <form
+              action="{{ url_for('cancel_appointment', appointment_id=appt.id) }}"
+              method="post"
+              style="display:inline-block"
+            >
+              <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5">No upcoming appointments.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>Past Appointments & Treatment</h4>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Doctor</th>
+      <th>Diagnosis</th>
+      <th>Prescription</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in past_appointments %}
+      <tr>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.doctor.full_name }}</td>
+        <td>{{ appt.treatment.diagnosis if appt.treatment else '' }}</td>
+        <td>{{ appt.treatment.prescription if appt.treatment else '' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No past appointments.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

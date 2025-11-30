@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Patient History</h2>
+
+<p>
+  Patient: <strong>{{ patient.full_name }}</strong><br>
+  Phone: {{ patient.phone }}<br>
+  Age: {{ patient.age if patient.age else 'N/A' }}, Gender: {{ patient.gender if patient.gender else 'N/A' }}
+</p>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Diagnosis</th>
+      <th>Prescription</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appt in appointments %}
+      <tr>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time.strftime('%H:%M') }}</td>
+        <td>{{ appt.status }}</td>
+        <td>{{ appt.treatment.diagnosis if appt.treatment else '' }}</td>
+        <td>{{ appt.treatment.prescription if appt.treatment else '' }}</td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="5">No past visits with this patient.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('doctor_dashboard') }}" class="btn btn-link">Back to Dashboard</a>
+{% endblock %}
