@@ -1,30 +1,31 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Admin Dashboard</h2>
-
-<div class="row mt-4">
-  <div class="col-md-4">
-    <div class="stat-box">
-      <h3>{{ total_doctors }}</h3>
-      <p>Doctors</p>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="stat-box">
-      <h3>{{ total_patients }}</h3>
-      <p>Patients</p>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="stat-box">
-      <h3>{{ total_appointments }}</h3>
-      <p>Appointments</p>
-    </div>
-  </div>
-</div>
-
-
-<a href="{{ url_for('admin_doctors') }}" class="btn btn-primary mt-3">
-  Manage Doctors
-</a>
-{% endblock %}
+{% extends "base.html" %} 
+{% block content %} 
+<h2>Admin Dashboard</h2> 
+ 
+<div class="row mt-4"> 
+  <div class="col-md-4"> 
+    <div class="stat-box"> 
+      <h3>{{ total_doctors }}</h3> 
+      <p>Doctors</p> 
+    </div> 
+  </div> 
+  <div class="col-md-4"> 
+    <div class="stat-box"> 
+      <h3>{{ total_patients }}</h3> 
+      <p>Patients</p> 
+    </div> 
+  </div> 
+  <div class="col-md-4"> 
+    <div class="stat-box"> 
+      <h3>{{ total_appointments }}</h3> 
+      <p>Appointments</p> 
+    </div> 
+  </div> 
+</div> 
+ 
+ 
+<a href="{{ url_for('admin_doctors') }}" class="btn btn-primary mt-3"> 
+  Manage Doctors 
+</a> 
+{% endblock %} 
+ 

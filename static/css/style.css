@@ -1,18 +1,18 @@
-/* Simple HMS Styling — clean beginner level */
+/*Simple HMS Styling — clean beginner level */
 
 body {
-    background-color: #f5f7fa;
-    font-family: Arial, sans-serif;
-    padding-bottom: 40px;
-}
+    background-color: #f5f7fa; 
+    font-family: Arial, sans-serif; 
+    padding-bottom: 40px; 
+} 
 
-.navbar {
-    background-color: #127c26 ;
-}
+.navbar { 
+    background-color: #127c26 ; 
+} 
 
-.navbar-brand, .nav-link {
+.navbar-brand, .nav-link { 
     color: #ffffff ;
-    font-weight: 600;
+    font-weight: 600; 
 }
 
 .navbar-brand:hover, .nav-link:hover {
@@ -64,7 +64,7 @@ h1, h2, h3, h4 {
     color: #075a24;
 }
 
-/* Form styling */
+/* Form styling */ 
 form label {
     font-weight: 600;
 }
@@ -73,7 +73,7 @@ input, select, textarea {
     border-radius: 6px ;
 }
 
-/* Dashboard summary boxes */
+/* Dashboard summary boxes */ 
 .stat-box {
     background: white;
     padding: 15px;
@@ -82,7 +82,7 @@ input, select, textarea {
     box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
-.stat-box h3 {
+.stat-box h3 { 
     color: #0f7e4c;
     font-weight: 700;
-}
+} 

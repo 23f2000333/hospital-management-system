@@ -1,88 +1,88 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% block content %}
-<h2>Edit Patient</h2>
+<h2>Edit Patient</h2> 
 
 <form method="post">
-  <div class="row">
+  <div class="row"> 
     <div class="col-md-6 mb-3">
-      <label class="form-label">Full Name</label>
+      <label class="form-label">Full Name</label> 
       <input
         type="text"
-        name="full_name"
+        name="full_name" 
         class="form-control"
         required
-        value="{{ patient.full_name }}"
+        value="{{ patient.full_name }}" 
       >
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-md-3 mb-3"> 
       <label class="form-label">Username</label>
       <input
-        type="text"
+        type="text" 
         name="username"
-        class="form-control"
+        class="form-control" 
         value="{{ patient.user.username }}"
       >
-    </div>
+    </div> 
     <div class="col-md-3 mb-3">
-      <label class="form-label">Email</label>
+      <label class="form-label">Email</label> 
       <input
         type="email"
         name="email"
-        class="form-control"
+        class="form-control" 
         value="{{ patient.user.email }}"
       >
     </div>
   </div>
-
+ 
   <div class="row">
     <div class="col-md-2 mb-3">
       <label class="form-label">Age</label>
-      <input
+      <input 
         type="number"
         name="age"
         class="form-control"
-        value="{{ patient.age if patient.age else '' }}"
+        value="{{ patient.age if patient.age else '' }}" 
       >
     </div>
     <div class="col-md-3 mb-3">
       <label class="form-label">Gender</label>
       <input
-        type="text"
+        type="text" 
         name="gender"
         class="form-control"
         value="{{ patient.gender }}"
       >
-    </div>
+    </div> 
     <div class="col-md-3 mb-3">
       <label class="form-label">Phone</label>
       <input
         type="text"
         name="phone"
-        class="form-control"
+        class="form-control" 
         value="{{ patient.phone }}"
       >
-    </div>
+    </div> 
   </div>
 
   <div class="mb-3">
     <label class="form-label">Address</label>
-    <textarea name="address" class="form-control" rows="3">{{ patient.address }}</textarea>
+    <textarea name="address" class="form-control" rows="3">{{ patient.address }}</textarea> 
   </div>
 
   <div class="form-check mb-3">
     <input
       type="checkbox"
-      class="form-check-input"
+      class="form-check-input" 
       name="is_blacklisted"
       id="is_blacklisted"
       {% if patient.is_blacklisted %}checked{% endif %}
-    >
+    > 
     <label for="is_blacklisted" class="form-check-label">
       Blacklisted
     </label>
   </div>
-
+ 
   <button type="submit" class="btn btn-primary">Save</button>
-  <a href="{{ url_for('admin_patients') }}" class="btn btn-secondary">Cancel</a>
-</form>
+  <a href="{{ url_for('admin_patients') }}" class="btn btn-secondary">Cancel</a> 
+</form> 
 {% endblock %}

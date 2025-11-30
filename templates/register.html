@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center"> 
   <div class="col-md-6">
     <h2 class="mb-3">Patient Registration</h2>
     <form method="post">
-      <div class="row">
+      <div class="row"> 
         <div class="col-md-6 mb-3">
-          <label class="form-label">Full Name</label>
+          <label class="form-label">Full Name</label> 
           <input type="text" name="full_name" class="form-control" required>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Username</label>
           <input type="text" name="username" class="form-control" required>
-        </div>
+        </div> 
       </div>
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label class="form-label">Email</label>
+          <label class="form-label">Email</label> 
           <input type="email" name="email" class="form-control" required>
         </div>
         <div class="col-md-6 mb-3">
@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row"> 
         <div class="col-md-4 mb-3">
           <label class="form-label">Age</label>
           <input type="number" name="age" class="form-control">
@@ -37,24 +37,24 @@
             <option value="">Select</option>
             <option>Male</option>
             <option>Female</option>
-            <option>Other</option>
+            <option>Other</option> 
           </select>
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">Password</label>
           <input type="password" name="password" class="form-control" required>
         </div>
-      </div>
+      </div> 
 
-      <div class="mb-3">
+      <div class="mb-3"> 
         <label class="form-label">Address</label>
         <textarea name="address" class="form-control" rows="2"></textarea>
       </div>
 
       <button type="submit" class="btn btn-success">Register</button>
-      <a href="{{ url_for('login') }}" class="btn btn-link">Back to login</a>
+      <a href="{{ url_for('login') }}" class="btn btn-link">Back to login</a> 
 
     </form>
-  </div>
+  </div> 
 </div>
-{% endblock %}
+{% endblock %} 

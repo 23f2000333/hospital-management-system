@@ -1,69 +1,69 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} 
+{% block content %} 
 <h2>Doctor Availability</h2>
 <p>Doctor: {{ doctor.full_name }}</p>
 
-<!-- Simple form to add one slot -->
+
 <form method="post" class="row g-3 mb-4">
   <div class="col-md-4">
     <label class="form-label">Date</label>
-    <input type="date" name="date" class="form-control" required>
+    <input type="date" name="date" class="form-control" required> 
   </div>
   <div class="col-md-3">
     <label class="form-label">Start Time</label>
-    <input type="time" name="start_time" class="form-control" required>
+    <input type="time" name="start_time" class="form-control" required> 
   </div>
   <div class="col-md-3">
     <label class="form-label">End Time</label>
     <input type="time" name="end_time" class="form-control" required>
   </div>
-  <div class="col-md-2 d-flex align-items-end">
+  <div class="col-md-2 d-flex align-items-end"> 
     <button type="submit" class="btn btn-primary w-100">Add Slot</button>
   </div>
 </form>
-
+ 
 <h4>Upcoming 7 days slots</h4>
 <table class="table table-sm">
-  <thead>
+  <thead> 
     <tr>
       <th>Date</th>
       <th>Start</th>
       <th>End</th>
       <th>Status</th>
       <th>Action</th>
-    </tr>
+    </tr> 
   </thead>
   <tbody>
     {% for s in slots %}
-      <tr>
+      <tr> 
         <td>{{ s.date }}</td>
         <td>{{ s.start_time.strftime('%H:%M') }}</td>
         <td>{{ s.end_time.strftime('%H:%M') }}</td>
-        <td>
+        <td> 
           {% if s.is_booked %}
             <span class="badge bg-secondary">Booked</span>
           {% else %}
             <span class="badge bg-success">Free</span>
           {% endif %}
         </td>
-        <td>
+        <td> 
           {% if not s.is_booked %}
             <form
               method="post"
               action="{{ url_for('delete_availability', slot_id=s.id) }}"
               style="display:inline-block"
-              onsubmit="return confirm('Delete this slot?');"
+              onsubmit="return confirm('Delete this slot?');" 
             >
               <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
             </form>
           {% endif %}
         </td>
       </tr>
-    {% else %}
+    {% else %} 
       <tr><td colspan="5">No slots.</td></tr>
     {% endfor %}
   </tbody>
 </table>
 
-<a href="{{ url_for('doctor_dashboard') }}" class="btn btn-link">Back to Dashboard</a>
+<a href="{{ url_for('doctor_dashboard') }}" class="btn btn-link">Back to Dashboard</a> 
 {% endblock %}

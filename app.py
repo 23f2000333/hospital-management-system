@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import (
-    LoginManager,
+from flask import Flask, render_template, request, redirect, url_for, flash 
+from flask_sqlalchemy import SQLAlchemy 
+from flask_login import ( 
+    LoginManager, 
     UserMixin,
     login_user,
     login_required,
@@ -10,14 +10,14 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date, timedelta, time
-import os
+import os 
 from sqlalchemy import or_  
 
-app = Flask(__name__)
+app = Flask(__name__) 
 
-# basic config
+
 app.config["SECRET_KEY"] = "change-this-secret-key"
-# sqlite database file in current folder
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///hospital.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -26,15 +26,15 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-# -------------------- MODELS -------------------- #
+# MODELS#
 
 class User(UserMixin, db.Model):
-    """Common user table for admin / doctor / patient."""
+    """Common user table for admin, doctor, patient."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # admin, doctor, patient
+    role = db.Column(db.String(20), nullable=False)  
     is_active = db.Column(db.Boolean, default=True)
 
     patient = db.relationship("PatientProfile", backref="user", uselist=False)
@@ -48,7 +48,7 @@ class User(UserMixin, db.Model):
 
 
 class PatientProfile(db.Model):
-    """Extra information for patient users."""
+    """ information for patients"""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
@@ -64,7 +64,7 @@ class PatientProfile(db.Model):
 
 
 class Department(db.Model):
-    """Simple department / specialization."""
+    """ department,specialization."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     description = db.Column(db.Text)
@@ -73,7 +73,7 @@ class Department(db.Model):
 
 
 class DoctorProfile(db.Model):
-    """Extra information for doctor users."""
+    """information for doctors"""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
@@ -98,7 +98,7 @@ class Appointment(db.Model):
 
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
-    status = db.Column(db.String(20), default="booked")  # booked / completed / cancelled
+    status = db.Column(db.String(20), default="booked")  
 
     reason = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -106,13 +106,13 @@ class Appointment(db.Model):
     treatment = db.relationship("TreatmentRecord", backref="appointment", uselist=False)
 
     __table_args__ = (
-        # prevent same doctor booking at same date+time
+        
         db.UniqueConstraint("doctor_id", "date", "time", name="uq_doctor_datetime"),
     )
 
 
 class TreatmentRecord(db.Model):
-    """Diagnosis & prescription for one appointment."""
+    """Diagnosis and prescription for appointment."""
     id = db.Column(db.Integer, primary_key=True)
     appointment_id = db.Column(db.Integer, db.ForeignKey("appointment.id"), nullable=False)
 
@@ -135,19 +135,19 @@ class DoctorAvailability(db.Model):
         db.UniqueConstraint("doctor_id", "date", "start_time", name="uq_doctor_slot"),
     )
 
-# -------------------- LOGIN MANAGER -------------------- #
+# LOGIN  #
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# -------------------- DB INIT (admin + departments) -------------------- #
+# DB INIT  #
 
 def init_db():
     """Creates tables and a default admin if not present."""
     db.create_all()
 
-    # default admin
+    
     admin = User.query.filter_by(role="admin").first()
     if not admin:
         admin = User(
@@ -156,10 +156,10 @@ def init_db():
             role="admin",
             is_active=True,
         )
-        admin.set_password("admin123")   # change later if you want
+        admin.set_password("admin123")   
         db.session.add(admin)
 
-    # some basic departments
+    
     if Department.query.count() == 0:
         d1 = Department(name="Cardiology", description="Heart related problems")
         d2 = Department(name="Oncology", description="Cancer treatment")
@@ -171,11 +171,11 @@ def init_db():
 with app.app_context():
     init_db()
 
-# -------------------- ROUTES: AUTH -------------------- #
+# ROUTES #
 
 @app.route("/")
 def home():
-    # redirect to login
+    
     return redirect(url_for("login"))
 
 @app.route("/register", methods=["GET", "POST"])
@@ -191,7 +191,7 @@ def register():
         gender = request.form.get("gender")
         address = request.form.get("address")
 
-        # simple validation
+        
         if not username or not email or not password or not full_name:
             flash("Please fill all required fields.", "danger")
             return render_template("register.html")
@@ -207,7 +207,7 @@ def register():
         user = User(username=username, email=email, role="patient")
         user.set_password(password)
         db.session.add(user)
-        db.session.flush()  # so we can use user.id
+        db.session.flush()  
 
         patient = PatientProfile(
             user_id=user.id,
@@ -248,7 +248,7 @@ def login():
         login_user(user)
         flash("Logged in successfully.", "success")
 
-        # send them to their dashboard
+        
         if user.role == "admin":
             return redirect(url_for("admin_dashboard"))
         elif user.role == "doctor":
@@ -266,7 +266,7 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
 
-# -------------------- DASHBOARDS (very basic) -------------------- #
+# DASHBOARDS  #
 
 @app.route("/admin")
 @login_required
@@ -297,7 +297,7 @@ def admin_doctors():
 
     query = DoctorProfile.query
     if q:
-        # search by doctor name or specialization (simple filter)
+        # search by doctor name or specialization
         query = query.filter(
             or_(
                 DoctorProfile.full_name.ilike(f"%{q}%"),
@@ -333,7 +333,7 @@ def add_doctor():
         years_experience = request.form.get("years_experience") or None
         bio = request.form.get("bio")
 
-        # basic validation
+        
         if not username or not email or not password or not full_name or not specialization:
             flash("Please fill all required fields.", "danger")
             return redirect(url_for("add_doctor"))
@@ -407,8 +407,8 @@ def edit_doctor(doctor_id):
         doctor.is_active = is_active
         doctor.is_blacklisted = is_blacklisted
 
-        # optional: allow admin to reset password
-        new_password = request.form.get("password")  # can be empty
+        # allow admin to reset password
+        new_password = request.form.get("password")  
         if new_password:
             user.set_password(new_password)
 
@@ -434,7 +434,7 @@ def delete_doctor(doctor_id):
     doctor = DoctorProfile.query.get_or_404(doctor_id)
     user = doctor.user
 
-    # simple delete; in real apps you might soft-delete instead
+    
     db.session.delete(doctor)
     db.session.delete(user)
     db.session.commit()
@@ -449,7 +449,7 @@ def admin_appointments():
     if current_user.role != "admin":
         return redirect(url_for("login"))
 
-    status_filter = request.args.get("status", "").strip()  # optional
+    status_filter = request.args.get("status", "").strip()  
 
     query = Appointment.query.order_by(Appointment.date.desc(), Appointment.time.desc())
     if status_filter:
@@ -524,14 +524,14 @@ def doctor_dashboard():
     past = []
 
     if doctor:
-        # upcoming = only booked appointments from today onwards
+        # booked appointments today onwards
         upcoming = Appointment.query.filter(
             Appointment.doctor_id == doctor.id,
             Appointment.date >= today,
             Appointment.status == "booked",
         ).order_by(Appointment.date, Appointment.time).all()
 
-        # past = completed/cancelled or any appointment before today
+        # completed/cancelled appointment before today
         past = Appointment.query.filter(
             Appointment.doctor_id == doctor.id,
             or_(Appointment.date < today, Appointment.status != "booked"),
@@ -581,7 +581,7 @@ def edit_treatment(appointment_id):
     if not doctor or appt.doctor_id != doctor.id:
         return redirect(url_for("doctor_dashboard"))
 
-    treatment = appt.treatment  # may be None
+    treatment = appt.treatment  
 
     if request.method == "POST":
         diagnosis = request.form.get("diagnosis")
@@ -601,7 +601,7 @@ def edit_treatment(appointment_id):
             treatment.prescription = prescription
             treatment.notes = notes
 
-        # mark appointment completed when treatment is saved
+        
         appt.status = "completed"
 
         db.session.commit()
@@ -642,7 +642,7 @@ def doctor_availability():
             flash("Invalid date or time format.", "danger")
             return redirect(url_for("doctor_availability"))
 
-        # enforce next 7 days rule
+        # only till next 7 days 
         if slot_date < today or slot_date > week_later:
             flash("Please select a date within the next 7 days.", "danger")
             return redirect(url_for("doctor_availability"))
@@ -667,7 +667,7 @@ def doctor_availability():
 
         return redirect(url_for("doctor_availability"))
 
-    # show only slots for next 7 days
+
     slots = DoctorAvailability.query.filter(
         DoctorAvailability.doctor_id == doctor.id,
         DoctorAvailability.date >= today,
@@ -687,7 +687,7 @@ def delete_availability(slot_id):
     doctor = DoctorProfile.query.filter_by(user_id=current_user.id).first()
     slot = DoctorAvailability.query.get_or_404(slot_id)
 
-    # make sure this slot belongs to this doctor
+    
     if not doctor or slot.doctor_id != doctor.id:
         return redirect(url_for("doctor_availability"))
 
@@ -714,7 +714,7 @@ def patient_history(patient_id):
 
     patient = PatientProfile.query.get_or_404(patient_id)
 
-    # show all appointments this doctor has had with this patient
+    
     appointments = Appointment.query.filter_by(
         doctor_id=doctor.id,
         patient_id=patient.id,
@@ -735,7 +735,7 @@ def patient_dashboard():
     patient = PatientProfile.query.filter_by(user_id=current_user.id).first()
     today = date.today()
 
-    # upcoming = only booked future/today appointments
+    
     upcoming = []
     past = []
 
@@ -746,7 +746,7 @@ def patient_dashboard():
             Appointment.status == "booked",
         ).order_by(Appointment.date, Appointment.time).all()
 
-        # past/history = completed/cancelled or older dates
+        
         past = Appointment.query.filter(
             Appointment.patient_id == patient.id,
             or_(Appointment.date < today, Appointment.status != "booked"),
@@ -754,7 +754,7 @@ def patient_dashboard():
 
     departments = Department.query.all()
 
-    # --- doctor search (for patient) ---
+    #  doctor search 
     q = request.args.get("q", "").strip()
     doctors_query = DoctorProfile.query.filter(
         DoctorProfile.is_active == True,
@@ -871,7 +871,7 @@ def cancel_appointment(appointment_id):
 
     appt.status = "cancelled"
 
-    # free the matching slot (same doctor/date/time)
+    # free the matching slot (same doctor,date,time)
     slot = DoctorAvailability.query.filter_by(
         doctor_id=appt.doctor_id,
         date=appt.date,
@@ -909,11 +909,6 @@ def patient_profile():
 
     return render_template("patient_profile.html", patient=patient, user=user)
 
-
-# later we will add:
-# - admin: add/edit/delete doctors, search, manage patients
-# - doctor: set availability, mark appointment completed, add treatment
-# - patient: search doctors, book/reschedule/cancel appointment
 
 if __name__ == "__main__":
     app.run(debug=True)
