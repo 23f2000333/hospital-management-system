@@ -1,0 +1,16 @@
+name: IITM Action Test
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 23f2000333@ds.study.iitm.ac.in
+        run: echo "Hello, world!"
+
+      - name: Verify
+        run: echo "Workflow executed successfully"
